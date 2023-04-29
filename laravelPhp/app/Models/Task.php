@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Task extends Model
 {
@@ -32,9 +33,15 @@ class Task extends Model
         return $this->count();
     }
 
-    public function insertTask()
+    public function insertTask(Request $request)
     {
-        return $this->count();
+        $user_id = auth()->user()->id;
+        $title = $request->title;
+        $description = $request->description;
+
+        DB::insert('insert into list_task (user_id,title,description) value (?, ?, ?)'
+            , [$user_id, $title, $description]);
+
     }
 
 }
