@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Mock project</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -237,7 +238,37 @@
         }
     </style>
     <script>
+        //delete task
+        function deleteTaskById(id) {
+            let confirm = window.confirm('Are you sure delete this record?');
+            if (!confirm) return;
+
+            window.location.assign('deleteTaskById?id=' + id);
+        }
+
+        //delete many task
+        function deleteTaskByListId() {
+            var listask = @json($listTask);
+            let listTaskDelete = [];
+            //check all of items want to delete
+            for (let i = 0; i < listask.length; i++) {
+                if ($('#checkbox' + listask[i].id).is(":checked")) {
+                    listTaskDelete.push(listask[i].id);
+                }
+            }
+            window.location.assign('deleteTaskByListId?ids=' + listTaskDelete.toString());
+        }
+
         $(document).ready(function(){
+            // hide messgage after delete record
+            setTimeout(() => {
+                    $('#messageDeleteFail').hide();
+            }, 3000);
+
+            setTimeout(() => {
+                $('#messageDeleteSuccess').hide();
+            }, 3000);
+
             // Check validate when add task
             $("#addTask").click(function () {
                 if ($('#addTitle').val().trim() == '') {
@@ -285,6 +316,16 @@
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
+                    @if (session()->has('messageDeleteFail'))
+                        <h4 class="alert alert-success" style="text-align: right; color: red" id="messageDeleteFail">
+                            {{ session()->get('messageDeleteFail') }}
+                        </h4>
+                    @endif
+                        @if (session()->has('messageDeleteSuccess'))
+                            <h4 class="alert alert-success" style="text-align: right; color: red" id="messageDeleteSuccess">
+                                {{ session()->get('messageDeleteSuccess') }}
+                            </h4>
+                        @endif
                     <div class="col-xs-6">
                         <h2>Manage <b>List Task Of User</b></h2>
                     </div>
@@ -316,8 +357,8 @@
                 <tr>
                     <td>
 								<span class="custom-checkbox">
-									<input type="checkbox" id="checkbox1" name="options[]" value="1">
-									<label for="checkbox1"></label>
+									<input type="checkbox" id="checkbox{{$data['id']}}" name="options[]" value="1">
+									<label for="checkbox{{$data['id']}}"></label>
 								</span>
                     </td>
                     <td>{{$data['user_name']}}</td>
@@ -333,73 +374,12 @@
                     @endswitch
                     <td>
                         <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                    </td>
+                        <a href="" class="delete" data-toggle="modal" onclick="deleteTaskById({{$data['id']}})"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                        <input id="signup-token" name="_token" type="hidden" value="{{csrf_token()}}">
+                        {{ csrf_field() }}
+                    </td
+                    >
                 </tr>
-{{--                <tr>--}}
-{{--                    <td>--}}
-{{--								<span class="custom-checkbox">--}}
-{{--									<input type="checkbox" id="checkbox2" name="options[]" value="1">--}}
-{{--									<label for="checkbox2"></label>--}}
-{{--								</span>--}}
-{{--                    </td>--}}
-{{--                    <td>Dominique Perrier</td>--}}
-{{--                    <td>dominiqueperrier@mail.com</td>--}}
-{{--                    <td>Obere Str. 57, Berlin, Germany</td>--}}
-{{--                    <td>(313) 555-5735</td>--}}
-{{--                    <td>--}}
-{{--                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>--}}
-{{--                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>--}}
-{{--								<span class="custom-checkbox">--}}
-{{--									<input type="checkbox" id="checkbox3" name="options[]" value="1">--}}
-{{--									<label for="checkbox3"></label>--}}
-{{--								</span>--}}
-{{--                    </td>--}}
-{{--                    <td>Maria Anders</td>--}}
-{{--                    <td>mariaanders@mail.com</td>--}}
-{{--                    <td>25, rue Lauriston, Paris, France</td>--}}
-{{--                    <td>(503) 555-9931</td>--}}
-{{--                    <td>--}}
-{{--                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>--}}
-{{--                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>--}}
-{{--								<span class="custom-checkbox">--}}
-{{--									<input type="checkbox" id="checkbox4" name="options[]" value="1">--}}
-{{--									<label for="checkbox4"></label>--}}
-{{--								</span>--}}
-{{--                    </td>--}}
-{{--                    <td>Fran Wilson</td>--}}
-{{--                    <td>franwilson@mail.com</td>--}}
-{{--                    <td>C/ Araquil, 67, Madrid, Spain</td>--}}
-{{--                    <td>(204) 619-5731</td>--}}
-{{--                    <td>--}}
-{{--                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>--}}
-{{--                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>--}}
-{{--								<span class="custom-checkbox">--}}
-{{--									<input type="checkbox" id="checkbox5" name="options[]" value="1">--}}
-{{--									<label for="checkbox5"></label>--}}
-{{--								</span>--}}
-{{--                    </td>--}}
-{{--                    <td>Martin Blank</td>--}}
-{{--                    <td>martinblank@mail.com</td>--}}
-{{--                    <td>Via Monte Bianco 34, Turin, Italy</td>--}}
-{{--                    <td>(480) 631-2097</td>--}}
-{{--                    <td>--}}
-{{--                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>--}}
-{{--                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
                 </tbody>
                 @endforeach
             </table>
@@ -507,7 +487,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-danger" value="Delete">
+                    <input type="button" class="btn btn-danger" value="Delete" id="deleteTaskById" onclick="deleteTaskByListId()">
                 </div>
             </form>
         </div>

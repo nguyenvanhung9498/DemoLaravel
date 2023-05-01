@@ -171,9 +171,9 @@
 </div>
 
 
-@if (session()->has('message'))
+@if (session()->has('messageSignup'))
     <div class="alert alert-success" style="text-align: right; color: blue">
-        {{ session()->get('message') }}
+        {{ session()->get('messageSignup') }}
     </div>
 @endif
 

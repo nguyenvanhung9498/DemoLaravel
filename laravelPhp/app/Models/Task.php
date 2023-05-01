@@ -13,7 +13,6 @@ class Task extends Model
 
     protected $primaryKey = 'id';
     protected $table = 'list_task';
-    public $timestamps = false;
     protected $dateFormat = 'd-m-Y';
 
     public function getAllTaskJoinUser()
@@ -38,10 +37,22 @@ class Task extends Model
         $user_id = auth()->user()->id;
         $title = $request->title;
         $description = $request->description;
+        $status = $request->status;
+        $createDate = now();
 
-        DB::insert('insert into list_task (user_id,title,description) value (?, ?, ?)'
-            , [$user_id, $title, $description]);
+        DB::insert('insert into list_task (user_id, title, description, status, created_at) value (?, ?, ?, ?, ?)'
+            , [$user_id, $title, $description, $status, $createDate]);
 
+    }
+
+    public function deleteTaskById($id)
+    {
+        return $this->destroy($id);
+    }
+
+    public function deleteTaskByListId($listId)
+    {
+        return $this->destroy($listId);
     }
 
 }
