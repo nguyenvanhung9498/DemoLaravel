@@ -15,11 +15,11 @@ class Task extends Model
     protected $table = 'list_task';
     protected $dateFormat = 'd-m-Y';
 
-    public function getAllTaskJoinUser()
+    public function getAllTaskJoinUser($limit, $offset)
     {
         return $this->join('users', 'list_task.user_id', 'users.id')
             ->select('list_task.id', 'list_task.title', 'list_task.description'
-                , 'list_task.status', 'users.user_name')->get();
+                , 'list_task.status', 'users.user_name')-> skip(0) -> take(5)->get();
     }
 
     public function getTaskByColum($nameColum, $value)
@@ -53,6 +53,18 @@ class Task extends Model
     public function deleteTaskByListId($listId)
     {
         return $this->destroy($listId);
+    }
+
+    public function updateTaskById($task)
+    {
+        $today = now();
+        $userId = $task['user_id'];
+        $title = $task['title'];
+        $description = $task['description'];
+        $status = $task['status'];
+        $id = $task['id'];
+        DB::update('update list_task set user_id = ?, title = ?, description = ?, status = ?, updated_at = ? where id = ?'
+            , [$userId, $title, $description, $status, $today, $id]);
     }
 
 }

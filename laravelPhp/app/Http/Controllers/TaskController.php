@@ -8,25 +8,33 @@ use Illuminate\Routing\Controller;
 
 class TaskController extends Controller{
 
-    public function viewlistTask(){
+    public function viewlistTask(Request $request){
         $task = new Task();
-        $listTask = $task->getAllTaskJoinUser();
-        return view('listTaskBeautiful', compact('listTask'));
+        $limit = $request->limit;
+        $offset = $request->offset;
+
+        if ($limit == null ) $limit = 5;
+        if ($offset == null ) $limit = 0;
+
+        $listTask = $task->getAllTaskJoinUser($limit, $offset);
+        $totalRecord = $task->totalTask();
+        dd($totalRecord);
+
+        return view('listTaskBeautiful', compact('listTask'), compact('totalRecord'));
     }
 
     public function insertTask(Request $request){
         $task = new Task();
         $task->insertTask($request);
 
-        return redirect()->route('listTask');
+        $messageCreateSuccess = 'you have been create a task';
+        return redirect()->route('listTask')
+            ->with('messageCreateSuccess', $messageCreateSuccess);
     }
 
     public function deleteTaskById(Request $request)
     {
         $id = $request->id;
-        if ($id == null || $id == '') return redirect()->route('listTask')
-            ->with('messageDeleteFail', 'delete this record fail, please try again!');
-
         $task = new Task();
         $task->deleteTaskById($id);
 
@@ -40,9 +48,6 @@ class TaskController extends Controller{
         $listIdStr = $request->ids;
         $listId = explode(",", $listIdStr);
 
-        if ($listIdStr == null || $listIdStr == '') return redirect()->route('listTask')
-            ->with('messageDeleteFail', 'delete this record fail, please try again!');
-
         $task = new Task();
         $task->deleteTaskByListId($listId);
 
@@ -51,4 +56,21 @@ class TaskController extends Controller{
             ->with('messageDeleteSuccess', $messageDeleteSuccess);
     }
 
+    public function updateTaskById(Request $request)
+    {
+        $user = auth()->user();
+        $taskUpdate = ['id' => $request->id, 'user_id' => $user->id, 'title' => $request->title
+            , 'description' => $request->description, 'status' => $request->status];
+
+        $task = new Task();
+        $task->updateTaskById($taskUpdate);
+        return 'You have been update success';
+    }
+
+    public function getUpdateMessage()
+    {
+        $messageUpdateSuccess = 'you have been update the task created by: tasks create by: ' . auth()->user()->user_name;
+        return redirect()->route('listTask')
+            ->with('messageUpdateSuccess', $messageUpdateSuccess);
+    }
 }

@@ -1,5 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Mock project</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>--}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
 <style>
     body {font-family: Arial, Helvetica, sans-serif;}
     * {box-sizing: border-box}
@@ -71,9 +85,32 @@
         }
     }
 </style>
+
+<script>
+
+
+    function validateSignUpForm() {
+        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($('#user_name').val()))) {
+            alert('Email not valid');
+            return
+        }
+        if ($('#password').val().length < 8) {
+            alert('Password must be at least 8 characters');
+            return;
+        }
+        if ($('#password').val() != $('#rePassword').val()) {
+            alert('Password and Repeat Password must be the same')
+            return;
+        }
+
+        $('#formForSignUp').submit();
+
+    }
+
+</script>
 <body>
 
-<form action="{{route('signupComplete')}}" style="border:1px solid #ccc" method="post">
+<form action="{{route('signupComplete')}}" style="border:1px solid #ccc" method="post" id="formForSignUp">
     @csrf
     <div class="container">
         <h1>Sign Up</h1>
@@ -81,13 +118,13 @@
         <hr>
 
         <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" name="user_name" required>
+        <input type="text" placeholder="Enter Email" name="user_name" id="user_name" required>
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
+        <input type="password" placeholder="Enter Password" name="password" id="password" required>
 
         <label for="psw-repeat"><b>Repeat Password</b></label>
-        <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+        <input type="password" placeholder="Repeat Password" name="psw-repeat" id="rePassword" required>
 
         <label>
             <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
@@ -97,10 +134,15 @@
 
         <div class="clearfix">
             <button type="button" class="cancelbtn" id="cancelId">Cancel</button>
-            <button type="submit" class="signupbtn">Sign Up</button>
+            <button type="button" class="signupbtn" onclick="validateSignUpForm()">Sign Up</button>
         </div>
+
         @if($errors && $errors != "[]")
-            {{$errors}}
+            <script>
+                $(document).ready(function () {
+                    alert('This email is already registered')
+                })
+            </script>
         @endif
     </div>
 </form>
