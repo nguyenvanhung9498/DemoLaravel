@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class TaskController extends Controller{
 
     public function viewlistTask(Request $request){
+        $currentPage = $request->currentPage;
+        if ($currentPage == null || $currentPage == '') {
+            $currentPage = 1;
+        }
+
+        $offset = $currentPage == 1 ? 0 : ($currentPage - 1) * 5;
         $task = new Task();
-        $limit = $request->limit;
-        $offset = $request->offset;
-
-        if ($limit == null ) $limit = 5;
-        if ($offset == null ) $limit = 0;
-
-        $listTask = $task->getAllTaskJoinUser($limit, $offset);
+        $listTask = $task->getAllTaskJoinUser($offset);
         $totalRecord = $task->totalTask();
-        dd($totalRecord);
 
-        return view('listTaskBeautiful', compact('listTask'), compact('totalRecord'));
+        return view('listTaskBeautiful', compact('listTask', 'totalRecord', 'currentPage'));
     }
 
     public function insertTask(Request $request){

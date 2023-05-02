@@ -15,11 +15,11 @@ class Task extends Model
     protected $table = 'list_task';
     protected $dateFormat = 'd-m-Y';
 
-    public function getAllTaskJoinUser($limit, $offset)
+    public function getAllTaskJoinUser($offset)
     {
         return $this->join('users', 'list_task.user_id', 'users.id')
             ->select('list_task.id', 'list_task.title', 'list_task.description'
-                , 'list_task.status', 'users.user_name')-> skip(0) -> take(5)->get();
+                , 'list_task.status', 'users.user_name')->skip($offset)->take(5)->get();
     }
 
     public function getTaskByColum($nameColum, $value)

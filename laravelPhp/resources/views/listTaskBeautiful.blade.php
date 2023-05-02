@@ -252,6 +252,7 @@
 
         }
 
+        console.log($(".page-link").text())
         //update task by id
         function updateTaskById(id) {
             //get data from input
@@ -290,7 +291,7 @@
                 type: "POST",
                 url: '/updateTaskById',
                 data: task,
-                success: function (message) {
+                success: function () {
                     window.location.assign('/updateTask');
                 }
             });
@@ -306,7 +307,6 @@
 
         //delete many task
         var listask = @json($listTask);
-
         function deleteTaskByListId() {
             //check all of items want to delete
             let listTaskDelete = [];
@@ -340,6 +340,30 @@
         }
 
         $(document).ready(function(){
+            //show number of record for each page
+            var totalRecord = @json($totalRecord);
+            var numberOfPage = 5;
+            var totalPageDouble = totalRecord / numberOfPage;
+            var totalPageInteger = totalPageDouble == Math.floor(totalPageDouble) ? totalPageDouble
+                : Math.floor(totalPageDouble) + 1;
+            var currentPage = $('.active').text();
+
+            function showNumberRecord() {
+                if (totalRecord < 5) {
+                    $('#numberOfRecord').html("Showing <b>" + totalRecord + "</b> out of " + "<b>" + totalRecord + "</b>  entries");
+                } else {
+                    if (numberOfPage * currentPage <= totalRecord) {
+                        $('#numberOfRecord').html("Showing <b>" + numberOfPage * currentPage
+                            + "</b> out of " + "<b>" + totalRecord + "</b>  entries");
+                    } else {
+                        $('#numberOfRecord').html("Showing <b>" + totalRecord
+                            + "</b> out of " + "<b>" + totalRecord + "</b>  entries");
+                    }
+                }
+            }
+
+            showNumberRecord();
+
             // hide messgage after delete record
             setTimeout(() => {
                 $('#messageCreateSuccess').hide();
@@ -554,15 +578,42 @@
                 @endforeach
             </table>
             <div class="clearfix">
-                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+                <div class="hint-text" id ='numberOfRecord'></div>
                 <ul class="pagination">
-                    <li class="page-item disabled"><a href="#">Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next</a></li>
+                    @php
+                        $num = $totalRecord/5;
+                        $totalPage = floor($num) == $num ? $num : (floor($num) +1);
+                    @endphp
+
+                    @if($currentPage == 1)
+                        <li class="page-item disabled"><a href="">Previous</a></li>
+                    @endif
+                    @if($currentPage != 1)
+                        <li class="page-item"><a href="/listtask?currentPage={{$currentPage - 1}}">
+                                Previous</a></li>
+                    @endif
+
+                    @for ($i=1; $i <= $totalPage; $i++)
+                        @if( $i == $currentPage)
+                            <li class="page-item active">
+                                <a href="/listtask?currentPage={{$i}}" class="page-link">{{$i}}</a>
+                            </li>
+                        @endif
+                        @if($i != $currentPage)
+                            <li class="page-item"><a href="/listtask?currentPage={{$i}}" class="page-link">{{$i}}</a>
+                            </li>
+                        @endif
+                    @endfor
+
+                    @if($currentPage == $totalPage)
+                        <li class="page-item disabled"><a href=""
+                                                          class="page-link">Next</a></li>
+                    @endif
+                    @if($currentPage != $totalPage)
+                        <li class="page-item"><a href="/listtask?currentPage={{$currentPage + 1}}"
+                                                 class="page-link">Next</a></li>
+                    @endif
+
                 </ul>
             </div>
         </div>
