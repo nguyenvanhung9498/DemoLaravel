@@ -252,7 +252,6 @@
 
         }
 
-        console.log($(".page-link").text())
         //update task by id
         function updateTaskById(id) {
             //get data from input
@@ -342,13 +341,18 @@
         $(document).ready(function(){
             //show number of record for each page
             var totalRecord = @json($totalRecord);
+            var searchTask = @json($searchTask);
             var numberOfPage = 5;
-            var totalPageDouble = totalRecord / numberOfPage;
-            var totalPageInteger = totalPageDouble == Math.floor(totalPageDouble) ? totalPageDouble
-                : Math.floor(totalPageDouble) + 1;
+            // var totalPageDouble = totalRecord / numberOfPage;
+            // totalPageDouble == Math.floor(totalPageDouble) ? totalPageDouble
+            //     : Math.floor(totalPageDouble) + 1;
             var currentPage = $('.active').text();
 
             function showNumberRecord() {
+                if (searchTask != null) {
+                    $('#boxTextSearchTask').val(searchTask);
+                }
+
                 if (totalRecord < 5) {
                     $('#numberOfRecord').html("Showing <b>" + totalRecord + "</b> out of " + "<b>" + totalRecord + "</b>  entries");
                 } else {
@@ -393,6 +397,13 @@
                 }
                 $('#createTask').submit();
             });
+
+            //search task
+            $('#searchTask').click(function () {
+                var currentPage = $('.active').text().trim();
+                textSeartchTask = $('#boxTextSearchTask').val().trim();
+                window.location.assign('/listtask?currentPage=' + currentPage + '&searchTask=' + textSeartchTask);
+            })
 
             // Activate tooltip
             $('[data-toggle="tooltip"]').tooltip();
@@ -445,10 +456,16 @@
                             {{ session()->get('messageUpdateSuccess') }}
                         </h4>
                     @endif
-                        `
+
                     <div class="col-xs-6">
                         <h2>Manage <b>List Task Of User</b></h2>
+                        <div>
+                            <input id="boxTextSearchTask" type="text" placeholder="Enter text want to search"
+                                   style="width: 240px; color: #1a202c" >
+                            <button style="color: red" id="searchTask"><b>Search</b></button>
+                        </div>
                     </div>
+
                     <div class="col-xs-6">
                         <a href="{{route('logout')}}" class="btn btn-warning" data-toggle="modal"><span>Log out </span></a>
                         <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Task</span></a>
