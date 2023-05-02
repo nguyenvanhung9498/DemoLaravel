@@ -91,9 +91,15 @@ class Task extends Model
             ->orWhere('list_task.description', 'like', $textSearch)->count();
     }
 
-    public function sortTaskByColumn($nameColum, $operator)
+    public function sortTaskByColumn($nameColum, $operator, $offset)
     {
-        return $this->where($nameColum, $operator)->get();
+        if ($nameColum == 'creator') {
+            $nameColum = 'users.user_name';
+        }
+
+        return $this->join('users', 'list_task.user_id', 'users.id')
+            ->select('list_task.id', 'list_task.title', 'list_task.description'
+                , 'list_task.status', 'users.user_name')->orderBy($nameColum, $operator)->skip($offset)->take(5)->get();
     }
 
     public function totalTask()

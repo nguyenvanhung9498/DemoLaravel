@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>--}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
@@ -238,6 +237,59 @@
         }
     </style>
     <script>
+    // sorting task
+        function sortByCreator() {
+            var currentPage = $('.active').text().trim();
+            if (!($('#sortByCreatorASC').is(":visible"))) {
+                $('#sortByCreatorASC').show();
+                $('#sortByCreatorDESC').hide();
+                window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=creator&operatorOrder=ASC');
+            } else {
+                $('#sortByCreatorASC').hide();
+                $('#sortByCreatorDESC').show();
+                window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=creator&operatorOrder=DESC');
+            }
+        }
+
+        function sortByTitle() {
+            var currentPage = $('.active').text().trim();
+            if (!($('#sortByTitleASC').is(":visible"))) {
+                $('#sortByTitleASC').show();
+                $('#sortByTitleDESC').hide();
+                window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=title&operatorOrder=ASC');
+            } else {
+                $('#sortByTitleASC').hide();
+                $('#sortByTitleDESC').show();
+                window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=title&operatorOrder=DESC');
+            }
+        }
+
+    function sortByDescription() {
+        var currentPage = $('.active').text().trim();
+        if (!($('#sortByDescriptionASC').is(":visible"))) {
+            $('#sortByDescriptionASC').show();
+            $('#sortByDescriptionDESC').hide();
+            window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=description&operatorOrder=ASC');
+        } else {
+            $('#sortByDescriptionASC').hide();
+            $('#sortByDescriptionDESC').show();
+            window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=description&operatorOrder=DESC');
+        }
+    }
+
+    function sortByStatus() {
+        var currentPage = $('.active').text().trim();
+        if (!($('#sortByStatusASC').is(":visible"))) {
+            $('#sortByStatusASC').show();
+            $('#sortByStatusDESC').hide();
+            window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=status&operatorOrder=ASC');
+        } else {
+            $('#sortByStatusASC').hide();
+            $('#sortByStatusDESC').show();
+            window.location.assign('/listtask?currentPage=' + currentPage + '&sortTask=status&operatorOrder=DESC');
+        }
+    }
+
         // change element to input element
         function changeToInputRecord(id){
             $("#titleOfTask" + id).hide();
@@ -342,10 +394,54 @@
             //show number of record for each page
             var totalRecord = @json($totalRecord);
             var searchTask = @json($searchTask);
+            var sortTask = @json($sortTask);
+            var operator = @json($operator);
+
+            function showSortIcon() {
+                if (sortTask == 'creator') {
+                    if (operator == 'ASC') {
+                        $('#sortByCreatorASC').show();
+                        $('#sortByCreatorDESC').hide();
+                    } else {
+                        $('#sortByCreatorASC').hide();
+                        $('#sortByCreatorDESC').show();
+                    }
+                }
+
+                if (sortTask == 'title') {
+                    if (operator == 'ASC') {
+                        $('#sortByTitleASC').show();
+                        $('#sortByTitleDESC').hide();
+                    } else {
+                        $('#sortByTitleASC').hide();
+                        $('#sortByTitleDESC').show();
+                    }
+                }
+
+                if (sortTask == 'description') {
+                    if (operator == 'ASC') {
+                        $('#sortByDescriptionASC').show();
+                        $('#sortByDescriptionDESC').hide();
+                    } else {
+                        $('#sortByDescriptionASC').hide();
+                        $('#sortByDescriptionDESC').show();
+                    }
+                }
+
+                if (sortTask == 'status') {
+                    if (operator == 'ASC') {
+                        $('#sortByStatusASC').show();
+                        $('#sortByStatusDESC').hide();
+                    } else {
+                        $('#sortByStatusASC').hide();
+                        $('#sortByStatusDESC').show();
+                    }
+                }
+            }
+
+            showSortIcon();
+
             var numberOfPage = 5;
-            // var totalPageDouble = totalRecord / numberOfPage;
-            // totalPageDouble == Math.floor(totalPageDouble) ? totalPageDouble
-            //     : Math.floor(totalPageDouble) + 1;
             var currentPage = $('.active').text();
 
             function showNumberRecord() {
@@ -482,10 +578,26 @@
 									<label for="selectAll"></label>
 								</span>
                     </th>
-                    <th>Creator</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Status</th>
+                    <th onclick="sortByCreator()">
+                        Creator &nbsp;
+                        <span class="glyphicon glyphicon-chevron-down" style="display: none" id="sortByCreatorDESC"></span>
+                        <span class="glyphicon glyphicon-chevron-up" style="display: none" id="sortByCreatorASC"></span>
+                    </th>
+                    <th onclick="sortByTitle()">
+                        Title &nbsp;
+                        <span class="glyphicon glyphicon-chevron-down" style="display: none" id="sortByTitleDESC"></span>
+                        <span class="glyphicon glyphicon-chevron-up" style="display: none" id="sortByTitleASC"></span>
+                    </th>
+                    <th onclick="sortByDescription()">
+                        Description &nbsp;
+                        <span class="glyphicon glyphicon-chevron-down" style="display: none" id="sortByDescriptionDESC"></span>
+                        <span class="glyphicon glyphicon-chevron-up" style="display: none" id="sortByDescriptionASC"></span>
+                    </th>
+                    <th onclick="sortByStatus()">
+                        Status &nbsp;
+                        <span class="glyphicon glyphicon-chevron-down" style="display: none" id="sortByStatusDESC"></span>
+                        <span class="glyphicon glyphicon-chevron-up" style="display: none" id="sortByStatusASC"></span>
+                    </th>
                     <th>Actions</th>
                 </tr>
                 </thead>

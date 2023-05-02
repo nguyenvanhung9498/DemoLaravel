@@ -20,7 +20,8 @@ class TaskController extends Controller
         $task = new Task();
         $listTask = [];
         $totalRecord = 0;
-        $sortTask = $request->sortTask;
+        $nameColumn = $request->sortTask;
+        $operator = $request->operatorOrder;
         $searchTask = $request->searchTask;
 
         //search task
@@ -29,14 +30,18 @@ class TaskController extends Controller
             $totalRecord = $task->totalTaskSearch($searchTask);
 
             //sort task
-        } elseif ($sortTask != null && $sortTask != '') {
+        } elseif ($nameColumn != null && $nameColumn != '') {
+            $listTask = $task->sortTaskByColumn($nameColumn, $operator, $offset);
             $totalRecord = $task->totalTask();
+
         } else {
             $listTask = $task->getAllTaskJoinUser($offset);
             $totalRecord = $task->totalTask();
         }
 
-        return view('listTaskBeautiful', compact('listTask', 'totalRecord', 'currentPage', 'searchTask'));
+        $sortTask = $request->sortTask;
+        return view('listTaskBeautiful', compact('listTask', 'totalRecord'
+                , 'currentPage', 'searchTask', 'sortTask', 'operator'));
     }
 
     public function insertTask(Request $request)
