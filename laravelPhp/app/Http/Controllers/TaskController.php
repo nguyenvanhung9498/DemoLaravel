@@ -25,12 +25,12 @@ class TaskController extends Controller
         $searchTask = $request->searchTask;
 
         //search task
-        if ($searchTask != null && $searchTask != '') {
+        if ($searchTask) {
             $listTask = $task->searchTask($searchTask, $offset);
             $totalRecord = $task->totalTaskSearch($searchTask);
 
             //sort task
-        } elseif ($nameColumn != null && $nameColumn != '') {
+        } elseif ($nameColumn) {
             $listTask = $task->sortTaskByColumn($nameColumn, $operator, $offset);
             $totalRecord = $task->totalTask();
 
@@ -54,18 +54,7 @@ class TaskController extends Controller
             ->with('messageCreateSuccess', $messageCreateSuccess);
     }
 
-    public function deleteTaskById(Request $request)
-    {
-        $id = $request->id;
-        $task = new Task();
-        $task->deleteTaskById($id);
-
-        $messageDeleteSuccess = 'you have been delete the task create by: ' . auth()->user()->user_name;
-        return redirect()->route('listTask')
-            ->with('messageDeleteSuccess', $messageDeleteSuccess);
-    }
-
-    public function deleteTaskByListId(Request $request)
+    public function deleteTask(Request $request)
     {
         $listIdStr = $request->ids;
         $listId = explode(",", $listIdStr);

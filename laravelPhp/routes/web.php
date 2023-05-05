@@ -12,9 +12,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [TaskController::class, 'viewlistTask']);
     Route::post('/insertTask', [TaskController::class, 'insertTask'])
         ->name('insertTask');
-    Route::get('/deleteTaskById', [TaskController::class, 'deleteTaskById']);
-    Route::get('/deleteTaskByListId', [TaskController::class, 'deleteTaskByListId'])
-        ->name('deleteTaskByListId');
+    Route::get('/deleteTask', [TaskController::class, 'deleteTask']);
     Route::post('/updateTaskById', [TaskController::class, 'updateTaskById'])
         ->name('updateTask');
     Route::get('/updateTask', [TaskController::class, 'getUpdateMessage'])

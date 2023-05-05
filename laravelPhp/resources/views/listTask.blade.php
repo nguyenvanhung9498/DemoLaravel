@@ -352,8 +352,9 @@
         function deleteTaskById(id) {
             let confirm = window.confirm('Are you sure delete this record?');
             if (!confirm) return;
-
-            window.location.assign('/deleteTaskById?id=' + id);
+            let task = [];
+            task.push(id);
+            window.location.assign('/deleteTask?ids=' + task.toString());
         }
 
         //delete many task
