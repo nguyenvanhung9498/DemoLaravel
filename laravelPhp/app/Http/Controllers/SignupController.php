@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Console\Input\Input;
 
 class SignupController extends Controller
 {
@@ -19,12 +21,11 @@ class SignupController extends Controller
 
     public function signupComplete(Request $request)
     {
-        $request->validate([
-            'user_name' => 'required|email|max:250|unique:users',
-            'password' => 'required|min:8',
-            'psw-repeat' => 'same:password',
-        ]);
-
+        $validator = Validator::make($request->all(),
+            ['user_name' => 'unique:users']);
+        if ($validator->fails()) {
+            return redirect('/sign_up')->withErrors($validator, 'login')->withInput($request->input());
+        }
         User::create([
             'user_name' => $request->user_name,
             'password' => Hash::make($request->password)
