@@ -40,7 +40,7 @@ class TaskController extends Controller
         }
 
         $sortTask = $request->sortTask;
-        return view('listTaskBeautiful', compact('listTask', 'totalRecord'
+        return view('listTask', compact('listTask', 'totalRecord'
                 , 'currentPage', 'searchTask', 'sortTask', 'operator'));
     }
 
