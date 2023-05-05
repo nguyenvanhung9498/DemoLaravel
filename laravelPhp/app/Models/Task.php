@@ -120,11 +120,6 @@ class Task extends Model
 
     }
 
-    public function deleteTaskById($id)
-    {
-        return $this->destroy($id);
-    }
-
     public function deleteTaskByListId($listId)
     {
         return $this->destroy($listId);
