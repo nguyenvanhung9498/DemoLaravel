@@ -478,6 +478,11 @@
                 $('#messageDeleteSuccess').hide();
             }, 3000);
 
+            //Add evidences
+            $('#addEvidence').click(function (){
+                $('#allEvidences').append("<input type='file' id='fileEvidence'>");
+            })
+
             // Check validate when add task
             $("#addTask").click(function () {
                 if ($('#addTitle').val().trim() == '') {
@@ -753,7 +758,7 @@
 <div id="addEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{route('insertTask')}}", method="post" id="createTask">
+            <form action="{{route('insertTask')}}", method="post" id="createTask" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h4 class="modal-title">Add Task</h4>
@@ -768,7 +773,7 @@
                         <label>Description</label>
                         <input type="text" class="form-control" name="description" id="addDescription"required>
                     </div>
-                    <div class="">
+                    <div class="form-group">
                         <label>Status</label>
                         <select class="" name="status" id="addStatus" required>
                             <option value="0">Please select status of task</option>
@@ -777,7 +782,13 @@
                             <option value="3">Review</option>
                             <option value="4">Done</option>
                         </select>
-
+                    </div>
+                    <div class="form-group" id="allEvidences">
+                        <label>Evidences</label>
+                        <input type="file" id="fileEvidence">
+                    </div>
+                    <div class="form-group">
+                        <input type="button" class="btn btn-info" value="More" id="addEvidence">
                     </div>
                 </div>
                 <div class="modal-footer">

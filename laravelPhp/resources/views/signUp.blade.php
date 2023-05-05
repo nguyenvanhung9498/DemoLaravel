@@ -15,8 +15,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <style>
-    body {font-family: Arial, Helvetica, sans-serif;}
-    * {box-sizing: border-box}
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box
+    }
 
     /* Full-width input fields */
     input[type=text], input[type=password] {
@@ -51,7 +56,7 @@
     }
 
     button:hover {
-        opacity:1;
+        opacity: 1;
     }
 
     /* Extra styles for the cancel button */
@@ -88,18 +93,20 @@
 
 <script>
 
-
     function validateSignUpForm() {
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($('#user_name').val()))) {
-            alert('Email not valid');
+            $('#validateEmai').text('Email is not valid!');
+            $('#validateEmai').show();
             return
         }
         if ($('#password').val().length < 8) {
-            alert('Password must be at least 8 characters');
+            $('#validatePassword').text('Password must be at least 8 characters');
+            $('#validatePassword').show();
             return;
         }
         if ($('#password').val() != $('#rePassword').val()) {
-            alert('Password and Repeat Password must be the same')
+            $('#validateRePassword').text('Password and Repeat Password must be the same');
+            $('#validateRePassword').show();
             return;
         }
 
@@ -118,12 +125,20 @@
         <hr>
 
         <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" name="user_name" id="user_name" required>
+        @if($errors->login->get('user_name'))
+            <div style="color: red">{{$errors->login->get('user_name')[0]}}</div>
+        @endif
+         <div style="color: red" hidden id="validateEmai"></div>
+        <input type="text" placeholder="Enter Email" name="user_name" id="user_name" value="{{old('user_name')}}"
+               required>
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" id="password" required>
+        <div style="color: red" id='validatePassword' hidden></div>
+        <input type="password" placeholder="Enter Password" name="password" id="password" value="{{old('password')}}"
+               required>
 
         <label for="psw-repeat"><b>Repeat Password</b></label>
+        <div style="color: red" id='validateRePassword' hidden></div>
         <input type="password" placeholder="Repeat Password" name="psw-repeat" id="rePassword" required>
 
         <label>
@@ -137,18 +152,11 @@
             <button type="button" class="signupbtn" onclick="validateSignUpForm()">Sign Up</button>
         </div>
 
-        @if($errors && $errors != "[]")
-            <script>
-                $(document).ready(function () {
-                    alert('This email is already registered')
-                })
-            </script>
-        @endif
     </div>
 </form>
 <script>
-    document.getElementById("cancelId").onclick = function (){
-        location.href='/login'
+    document.getElementById("cancelId").onclick = function () {
+        location.href = '/login'
     }
 </script>
 
