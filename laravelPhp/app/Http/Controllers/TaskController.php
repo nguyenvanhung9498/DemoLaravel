@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Evidence;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -29,7 +30,7 @@ class TaskController extends Controller
             $listTask = $task->searchTask($searchTask, $offset);
             $totalRecord = $task->totalTaskSearch($searchTask);
 
-            //sort task
+        //sort task
         } elseif ($nameColumn) {
             $listTask = $task->sortTaskByColumn($nameColumn, $operator, $offset);
             $totalRecord = $task->totalTask();
@@ -48,6 +49,20 @@ class TaskController extends Controller
     {
         $task = new Task();
         $task->insertTask($request);
+
+        $listEvidenceParam = $request->file('evidences');
+        $listFile = [];
+        if ($listEvidenceParam) {
+            foreach ($listEvidenceParam as $fileEvidence) {
+                $listFile[] = ['filePath' => $fileEvidence->getClientOriginalName(), 'fileType' => $fileEvidence->clientExtension()];
+                $fileEvidence->storeAs('public/store/evidence', $fileEvidence->getClientOriginalName());
+            }
+        }
+
+        $taskIDForInsertEvidence = $task->getTaskIDForInsertEvidence()[0]['id'];
+        $listEvidence = ['task_id' => $taskIDForInsertEvidence, 'listFileEvidence' => $listFile];
+        $evidence = new Evidence();
+        $evidence->insertEvidence($listEvidence);
 
         $messageCreateSuccess = 'you have been create a task';
         return redirect()->route('listTask')

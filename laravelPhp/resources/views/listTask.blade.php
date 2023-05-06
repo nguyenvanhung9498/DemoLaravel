@@ -391,6 +391,14 @@
             }
         }
 
+        function checkExtentionFile(extentionToUper) {
+            if (extentionToUper == 'DOC' || extentionToUper == 'DOCX' || extentionToUper == 'PNG'
+                || extentionToUper == 'MP4' || extentionToUper == 'JPG' || extentionToUper == 'JPEG') {
+                return true;
+            }
+            return false;
+        }
+
         $(document).ready(function(){
             //show number of record for each page
             var totalRecord = @json($totalRecord);
@@ -480,7 +488,10 @@
 
             //Add evidences
             $('#addEvidence').click(function (){
-                $('#allEvidences').append("<input type='file' id='fileEvidence'>");
+                $('#allEvidences').append("<input type='file' id='fileEvidence' name='evidences[]' class='fileEvidence'>");
+            })
+            $('#addEvidenceUpdate').click(function (){
+                $('#allEvidences').append("<input type='file' id='fileEvidence' name='evidences[]' class='fileEvidence'>");
             })
 
             // Check validate when add task
@@ -497,7 +508,27 @@
                     alert('Please choose your status ');
                     return;
                 }
-                $('#createTask').submit();
+
+                let isSubmit = true;
+                $('.fileEvidence').each(function () {
+                    let file = $(this).prop('files');
+                    if (file.length != 0) {
+                        let fileName = file[0].name;
+                        let extention = fileName.split('.')[1];
+                        console.log(extention);
+                        if (!checkExtentionFile(extention.toString().toUpperCase())) {
+                            alert('File have to extention are: doc, docx, png, jpg, jpeg, mp4');
+                            isSubmit = false;
+                        }
+                    }
+                })
+
+                if(isSubmit){
+                    $('#createTask').submit();
+                }else {
+                    return;
+                }
+
             });
 
             //search task
@@ -604,6 +635,7 @@
                         <span class="glyphicon glyphicon-chevron-down" style="display: none" id="sortByStatusDESC"></span>
                         <span class="glyphicon glyphicon-chevron-up" style="display: none" id="sortByStatusASC"></span>
                     </th>
+                    <th>Evidence</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -695,7 +727,9 @@
                             </select>
                         </td>
                     @endswitch
-
+                    <td>
+                        <a href="/evidence?taskID={{$data['id']}}" id="evidenceAElement{{$data['id']}}">View evidence</a>
+                    </td>
                     <td>
                         <a href="" class="edit" data-toggle="modal">
                             <i class="material-icons" data-toggle="tooltip" title="Edit" id="editTask{{$data['id']}}"
@@ -785,7 +819,7 @@
                     </div>
                     <div class="form-group" id="allEvidences">
                         <label>Evidences</label>
-                        <input type="file" id="fileEvidence">
+                        <input type="file" id="fileEvidence" name="evidences[]" class="fileEvidence">
                     </div>
                     <div class="form-group">
                         <input type="button" class="btn btn-info" value="More" id="addEvidence">

@@ -22,6 +22,11 @@ class Task extends Model
                 , 'list_task.status', 'users.user_name')->skip($offset)->take(5)->get();
     }
 
+    public function getTaskIDForInsertEvidence()
+    {
+        return $this->select('id')->orderByDesc('id')->limit(1)->get();
+    }
+
     public function searchTask($text, $offset)
     {
         if (str_contains('INPROGRESS', strtoupper($text)) || str_contains('DONE', strtoupper($text))
