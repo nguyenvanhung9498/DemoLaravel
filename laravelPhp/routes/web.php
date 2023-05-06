@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EvidenceController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\SignupController;
@@ -17,6 +18,12 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('updateTask');
     Route::get('/updateTask', [TaskController::class, 'getUpdateMessage'])
         ->name('getMessageUpdate');
+    Route::get('/evidence', [EvidenceController::class, 'viewListEvidence'])
+        ->name('evidence');
+    Route::post('/addEvidence', [EvidenceController::class, 'insertEvidence'])
+        ->name('addEvd');
+    Route::post('/updateEvidence', [EvidenceController::class, 'updateEvidence'])
+        ->name('updateEvd');
 });
 Route::get('/login', [LoginController::class, 'viewFormlogin'])->name('login');
 Route::post('/login', [LoginController::class, 'checkUserInfo'])->name('loginPost');
