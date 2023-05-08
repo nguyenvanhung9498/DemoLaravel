@@ -728,7 +728,7 @@
                         </td>
                     @endswitch
                     <td>
-                        <a href="/evidence?taskID={{$data['id']}}" id="evidenceAElement{{$data['id']}}">View evidence</a>
+                        <a href="/evidence?taskID={{$data['id']}}" id="evidenceAElement{{$data['id']}}">Detail</a>
                     </td>
                     <td>
                         <a href="" class="edit" data-toggle="modal">
@@ -883,7 +883,7 @@
                 </div>
 
                 <div class="modal-body" id="messageDeleteValidate" hidden>
-                    <b>Please choose some task you want to delete!</b>
+                    <b>Please choose some tasks you want to delete!</b>
                 </div>
 
                 <div class="modal-footer">

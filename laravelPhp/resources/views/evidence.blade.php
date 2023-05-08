@@ -30,6 +30,11 @@
         <b> {{session()->get('messageAddEvidence')}}</b></h4>
 @endif
 
+@if(session()->has('messageDeleteSuccess'))
+    <h4 style="color: red; text-align: center" class="messageChange">
+        <b> {{session()->get('messageDeleteSuccess')}}</b></h4>
+@endif
+
 @if(sizeof($listEvidenceByTaskID) != 0)
         <br>
         <table class="table">
@@ -86,9 +91,12 @@
                                onclick="submitFormUpdateEvidence({{$listEvidenceByTaskID[$i]->id}})"
                                id="checkUpdateFile{{$listEvidenceByTaskID[$i]->id}}">check</i>
                         </a>
-                        <a href="" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip"
-                                                                         title="Delete"
-                                                                         style="color: red">&#xE872;</i></a>
+                        <a href="" class="delete" data-toggle="modal">
+                            <i class="material-icons" data-toggle="tooltip"
+                               onclick="deleteEvidence({{$taskID}},{{$listEvidenceByTaskID[$i]->id}})"
+                               title="Delete" style="color: red">&#xE872;
+                            </i>
+                        </a>
                     </td>
                 </tr>
 
@@ -125,6 +133,12 @@
 
 </body>
 <script>
+    //Delete Evidence
+    function deleteEvidence(taskID, evidenceID){
+        let confirm = window.confirm('Are you sure delete this record?');
+        if (!confirm) return;
+        window.location.assign('/deleteEvidence?taskID=' + taskID + '&evidenceID=' + evidenceID);
+    }
     //Add evidence
     function showButtoncheckAddFile(id) {
         $('#addEvidence').show();
@@ -145,7 +159,7 @@
         $('.formUpdateEvidence'+id).show();
         $('.filePath' +id).hide();
         $('#checkUpdateFile' + id).show();
-        $('#addFile' + id).hide();
+        $('#editFile' + id).hide();
     }
     function submitFormUpdateEvidence(id){
         let file = $('#fileUpdate').val();

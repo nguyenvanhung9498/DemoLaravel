@@ -24,6 +24,8 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('addEvd');
     Route::post('/updateEvidence', [EvidenceController::class, 'updateEvidence'])
         ->name('updateEvd');
+    Route::get('/deleteEvidence', [EvidenceController::class, 'deleteTask'])
+        ->name('deletEvd');
 });
 Route::get('/login', [LoginController::class, 'viewFormlogin'])->name('login');
 Route::post('/login', [LoginController::class, 'checkUserInfo'])->name('loginPost');

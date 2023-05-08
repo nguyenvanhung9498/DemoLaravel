@@ -43,4 +43,14 @@ class EvidenceController extends Controller
 
         return redirect('/evidence?taskID=' . $taskID)->with('messageUpdateEvidence','Update Evidence Success!');
     }
+
+    function deleteTask(Request $request)
+    {
+        $evidence = new Evidence();
+        $evidenceId = $request->evidenceID;
+        $evidence->deleteTask($evidenceId);
+        $taskID = $request->taskID;
+
+        return redirect('/evidence?taskID='.$taskID)->with('messageDeleteSuccess','You have been delete a task!');
+    }
 }

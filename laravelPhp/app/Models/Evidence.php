@@ -47,4 +47,10 @@ class Evidence extends Model
         DB::update('update evidences set file_path = ?, file_type = ?, updated_at = ? where id = ?'
             , [$filePath, $fileType, $today, $id]);
     }
+
+    public function deleteTask($evidenceId)
+    {
+        $this->destroy($evidenceId);
+    }
+
 }
