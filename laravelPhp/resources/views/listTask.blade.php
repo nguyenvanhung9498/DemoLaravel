@@ -533,9 +533,8 @@
 
             //search task
             $('#searchTask').click(function () {
-                var currentPage = $('.active').text().trim();
                 textSeartchTask = $('#boxTextSearchTask').val().trim();
-                window.location.assign('/listtask?currentPage=' + currentPage + '&searchTask=' + textSeartchTask);
+                window.location.assign('/listtask?currentPage=' + 1 + '&searchTask=' + textSeartchTask);
             })
 
             // Activate tooltip
@@ -757,19 +756,47 @@
                     @if($currentPage == 1)
                         <li class="page-item disabled"><a href="">Previous</a></li>
                     @endif
+
+                    @php
+                        $url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                                            $components = parse_url($url);
+                                            if (isset($components['query'])){
+                                                 parse_str($components['query'], $results);
+                                            }
+
+                                            $searchTaskURL = '';
+                                            $sortTaskURL = '' ;
+                                            $operatorOrderURL = '';
+
+                                            if (isset($results['sortTask'])){
+                                                $sortTaskURL = $results['sortTask'];
+                                            }
+                                            if (isset($results['operatorOrder'])){
+                                                $operatorOrderURL = $results['operatorOrder'];
+                                            }
+                                            if (isset($results['searchTask'])){
+                                                $searchTaskURL = $results['searchTask'];
+                                            }
+                    @endphp
+
                     @if($currentPage != 1)
-                        <li class="page-item"><a href="/listtask?currentPage={{$currentPage - 1}}">
+                        <li class="page-item"><a href="/listtask?currentPage={{$currentPage - 1}}&searchTask={{$searchTaskURL}}
+                                            &sortTask={{$sortTaskURL}}&operatorOrder={{$operatorOrderURL}}">
                                 Previous</a></li>
                     @endif
 
                     @for ($i=1; $i <= $totalPage; $i++)
                         @if( $i == $currentPage)
                             <li class="page-item active">
-                                <a href="/listtask?currentPage={{$i}}" class="page-link">{{$i}}</a>
+                                <a href="/listtask?currentPage={{$i}}&searchTask={{$searchTaskURL}}
+                                            &sortTask={{$sortTaskURL}}&operatorOrder={{$operatorOrderURL}}"
+                                   class="page-link">{{$i}}</a>
                             </li>
                         @endif
                         @if($i != $currentPage)
-                            <li class="page-item"><a href="/listtask?currentPage={{$i}}" class="page-link">{{$i}}</a>
+                            <li class="page-item"><a href="/listtask?currentPage={{$i}}&searchTask={{$searchTaskURL}}
+                                            &sortTask={{$sortTaskURL}}&operatorOrder={{$operatorOrderURL}}"
+                                                     class="page-link">{{$i}}</a>
                             </li>
                         @endif
                     @endfor
@@ -779,7 +806,8 @@
                                                           class="page-link">Next</a></li>
                     @endif
                     @if($currentPage != $totalPage)
-                        <li class="page-item"><a href="/listtask?currentPage={{$currentPage + 1}}"
+                        <li class="page-item"><a href="/listtask?currentPage={{$currentPage + 1}}&searchTask={{$searchTaskURL}}
+                                            &sortTask={{$sortTaskURL}}&operatorOrder={{$operatorOrderURL}}"
                                                  class="page-link">Next</a></li>
                     @endif
 
